@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="/static/css/styles.css" media="all">
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="/static/js/jquery.js"></script>
+    <script type="text/javascript" src="/static/js/moment.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-datetimepicker.js"></script>
+    <title>查询</title>
+    <style>
+        body{
+            background-color: lightgray;
+            margin: 0;
+            padding: 0;
+        }
+        #img1{
+            background: url(/static/img/back.jpg) ;
+            width: 375px;
+            background-size:cover;
+            height: 140px;
+        }
+
+        #u{
+            font-family: Helvetica Neue,Helvetica,Roboto,Segoe UI,Arial,sans-serif;
+            margin-left: 5px;
+            margin-right: 5px;
+            border: 1px;
+
+        }
+        li{
+            list-style:none;
+            background-color: antiquewhite;
+            margin-top: 10px;
+            border-radius:25px ;
+            padding-left:  20px;
+            padding-right: 20px;
+        }
+        button,#page,#but{
+            height: 40px;
+            width: 100px;
+        }
+        #ma{
+            text-align: center;
+        }
+    </style>
+
+
+    <script type="text/javascript">
+$(document).ready(function(){
+    // date time picker
+    if($(".iDate.full").length>0){
+        $(".iDate.full").datetimepicker({
+            locale: "zh-cn",
+            format: "YYYY-MM-DD ",
+            dayViewHeaderFormat: "YYYY年 MMMM"
+        });
+    }
+    if($(".iDate.date").length>0){
+        $(".iDate.date").datetimepicker({
+            locale:"zh-cn",
+            format:"YYYY-MM-DD",
+            dayViewHeaderFormat:"YYYY年 MMMM"
+        });
+    }
+})
+</script>
+
+</head>
+<body>
+<div id="img1"></div>
+
+<p style="font-size: 35px;text-align: center; font-family: Helvetica Neue,Helvetica,Roboto,Segoe UI,Arial,sans-serif;;">您当前的可用余额为</p>
+<p style="font-size: 60px;text-align: center" id="maney">...</p>
+
+
+
+
+<div>
+    <ul id="u">
+
+    </ul>
+</div>
+
+
+
+
+
+
+
+    <script>
+
+
+
+
+
+                    $.ajax({
+                url: "/api/find",
+                type: "POST",
+
+                success : function (data) {
+                            jsdata=JSON.parse(data);
+                            console.log(data);
+                            console.log(jsdata);
+                            maney=jsdata.tradelist[0].balance;
+                            console.log(maney);
+                    document.getElementById("maney").innerText=maney;
+                    console.log(data);
+
+                    for(var i=0;i<jsdata.tradelist.length;i++)
+                    {
+                        var createli=document.createElement("li");
+                        createli.innerHTML="时间 "+":&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+jsdata.tradelist[i].txdate+"<br>"+"消费额"+":&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+jsdata.tradelist[i].txamt+"<br>"+"消费方式"+":&nbsp;&nbsp;"+jsdata.tradelist[i].mername+"<br>"+"余额"+":&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+jsdata.tradelist[i].balance;
+                        createli.style="    font-size: 20px;";
+                        document.getElementById("u").appendChild(createli);
+                    }
+
+
+
+                    },
+
+                error : function(){
+                    console.log("失败")
+                }
+            })
+    </script>
+
+</body>
+</html>
